@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-center mt-4">
+  <div class="card shadow p-4 w-100" style="max-width:750px;">
+
+    <h3 class="text-primary mb-3">
+      HOD — Respond to Complaint #{{ complaint.id }}
+    </h3>
+
+    <p><b>Status:</b> {{ complaint.status }}</p>
+    <hr>
+
+    <h5 class="fw-bold">Description</h5>
+    <p class="alert alert-light border" style="white-space: pre-line;">
+        {{ complaint.description }}
+    </p>
+
+    <h5 class="fw-bold mt-4">Student Attachments</h5>
+    {% if complaint.attachment %}
+        <ul class="list-group mb-3">
+            {% for f in complaint.attachment.split(',') %}
+            <li class="list-group-item d-flex justify-content-between">
+                {{ f }}
+                <a href="{{ url_for('student.view_file', filename=f) }}"
+                   target="_blank"
+                   class="btn btn-sm btn-outline-primary">View</a>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted">No attachments uploaded by student.</p>
+    {% endif %}
+
+    <hr>
+
+    {% if complaint.response %}
+        <div class="alert alert-warning fw-semibold text-center">
+            You already responded.<br>
+            <a href="{{ url_for('hod.resolve_complaint', complaint_id=complaint.id) }}">Go to Resolve</a>
+        </div>
+    {% else %}
+
+        <h4 class="text-success fw-bold">Submit Your Response</h4>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <label class="fw-semibold">Response</label>
+            <textarea name="response" class="form-control mb-3" rows="4" required></textarea>
+
+            <label class="fw-semibold">Upload BEFORE Images</label>
+            <input type="file"
+                   name="before_files"
+                   multiple
+                   class="form-control mb-3"
+                   onchange="prefixFiles(event,'BEFORE_')">
+
+            <label class="fw-semibold">Upload AFTER Images</label>
+            <input type="file"
+                   name="after_files"
+                   multiple
+                   class="form-control mb-4"
+                   onchange="prefixFiles(event,'AFTER_')">
+
+            <button class="btn btn-success w-100 fw-semibold">
+              Submit Response
+            </button>
+        </form>
+
+    {% endif %}
+
+  </div>
+</div>
+
+<script>
+function prefixFiles(e, prefix) {
+    const dt = new DataTransfer();
+    for (let f of e.target.files)
+        dt.items.add(new File([f], prefix + f.name, { type: f.type }));
+    e.target.files = dt.files;
+}
+</script>
+
+{% endblock %}

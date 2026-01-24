@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+  <div class="card shadow p-4" style="max-width:750px; margin:auto;">
+
+    <h3 class="text-primary fw-bold">Respond to Complaint #{{ complaint.id }}</h3>
+    <hr>
+
+    <form method="POST" enctype="multipart/form-data">
+
+      <label class="fw-semibold">Your Response</label>
+      <textarea name="response" rows="4" class="form-control mb-3" required></textarea>
+
+      <label class="fw-semibold">Upload BEFORE Images</label>
+      <input type="file" name="before_files" class="form-control mb-3" multiple>
+
+      <button class="btn btn-success w-100">Submit Response</button>
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

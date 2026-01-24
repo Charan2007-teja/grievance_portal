@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+.dashboard-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #232946;
+}
+
+.dashboard-header .profile {
+    color: #6b7280;
+    font-size: 1rem;
+}
+
+.dashboard-stat {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.dashboard-stat .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.dashboard-section {
+    background: #fff;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 28px;
+}
+
+/* FIX CHART SHAPE */
+.chart-box {
+    width: 100%;
+    max-width: 360px;
+    height: 300px;
+}
+
+.chart-box canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Table */
+.dashboard-table th {
+    background: #f1f1f1;
+    font-weight: 600;
+}
+</style>
+
+<div class="dashboard-main">
+
+  <!-- HEADER -->
+  <div class="dashboard-header d-flex justify-content-between align-items-center mb-4">
+      <div>
+          <h2>Principal Dashboard</h2>
+          <div class="profile">
+              Welcome, <b>{{ profile.name }}</b> ({{ profile.email }})
+          </div>
+      </div>
+
+      <a href="/principal/all_complaints" class="btn btn-primary fw-semibold">
+          View All Complaints
+      </a>
+  </div>
+
+  <!-- STATS -->
+  <div class="row g-3 mb-4">
+
+      <div class="col-md-3">
+          <div class="dashboard-stat">
+              <div class="stat-value">{{ total }}</div>
+              <div class="text-muted">Total Complaints</div>
+          </div>
+      </div>
+
+      <div class="col-md-3">
+          <div class="dashboard-stat">
+              <div class="stat-value text-warning">{{ pending }}</div>
+              <div class="text-muted">Pending</div>
+          </div>
+      </div>
+
+      <div class="col-md-3">
+          <div class="dashboard-stat">
+              <div class="stat-value text-primary">{{ in_progress }}</div>
+              <div class="text-muted">In Progress</div>
+          </div>
+      </div>
+
+      <div class="col-md-3">
+          <div class="dashboard-stat">
+              <div class="stat-value text-success">{{ resolved }}</div>
+              <div class="text-muted">Resolved</div>
+          </div>
+      </div>
+
+  </div>
+
+  <!-- CHARTS -->
+  <div class="dashboard-section">
+      <div class="row g-4">
+
+          <div class="col-md-4">
+              <h5>Complaints by Department</h5>
+              <div class="chart-box">
+                  <canvas id="deptChart"></canvas>
+              </div>
+              <p class="mt-2">CSE: <b>{{ dept_counts['CSE'] }}</b></p>
+              <p>ECE: <b>{{ dept_counts['ECE'] }}</b></p>
+          </div>
+
+          <div class="col-md-4">
+              <h5>Complaints by Category</h5>
+              <div class="chart-box">
+                  <canvas id="catChart"></canvas>
+              </div>
+              <ul>
+                {% for k,v in category_counts.items() %}
+                    <li>{{ k }} — <b>{{ v }}</b></li>
+                {% endfor %}
+              </ul>
+          </div>
+
+          <div class="col-md-4">
+              <h5>Status Breakdown</h5>
+              <div class="chart-box">
+                  <canvas id="statusChart"></canvas>
+              </div>
+              <p class="mt-2">Pending: <b>{{ pending }}</b></p>
+              <p>In Progress: <b>{{ in_progress }}</b></p>
+              <p>Resolved: <b>{{ resolved }}</b></p>
+          </div>
+
+      </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="dashboard-section">
+      <h5>All Complaints</h5>
+
+      <table class="table dashboard-table">
+          <thead>
+              <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Student</th>
+                  <th>Dept</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Submitted</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for c in complaints %}
+              <tr>
+                  <td>{{ c.id }}</td>
+                  <td>{{ c.title }}</td>
+                  <td>{{ c.student.name }}</td>
+                  <td>{{ c.department }}</td>
+                  <td>{{ c.category }}</td>
+                  <td>{{ c.status }}</td>
+                  <td>{{ c.created_at.strftime("%d %b %Y") }}</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+  </div>
+
+</div>
+
+<!-- Chart.js (no file needed) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+new Chart(document.getElementById('deptChart'), {
+    type: 'bar',
+    data: {
+        labels: ['CSE', 'ECE'],
+        datasets: [{
+            data: {{ [dept_counts['CSE'], dept_counts['ECE']] | tojson }},
+            backgroundColor: ['#6366f1', '#ec4899']
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true } }
+    }
+});
+
+new Chart(document.getElementById('catChart'), {
+    type: 'doughnut',
+    data: {
+        labels: {{ category_counts.keys() | list | tojson }},
+        datasets: [{
+            data: {{ category_counts.values() | list | tojson }},
+            backgroundColor: ['#6366f1','#ec4899','#10b981','#f59e0b','#ef4444','#818cf8']
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+
+new Chart(document.getElementById('statusChart'), {
+    type: 'pie',
+    data: {
+        labels: ['Pending','In Progress','Resolved'],
+        datasets: [{
+            data: {{ [pending, in_progress, resolved] | tojson }},
+            backgroundColor: ['#f59e0b','#818cf8','#10b981']
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- HEADER BOX -->
+<div class="bg-white border rounded shadow-sm p-4 mb-4">
+    <div class="d-flex flex-column flex-md-row align-items-center gap-4">
+
+        <img src="{{ url_for('static', filename='images/sdptlogo.jpg') }}"
+             style="height:80px; border-radius:6px;">
+
+        <div>
+            <h3 class="fw-bold mb-1">Government Polytechnic Siddipet</h3>
+            <p class="text-muted mb-0">Grievance Redressal Portal</p>
+        </div>
+
+    </div>
+</div>
+
+<!-- ACTION BOX -->
+<div class="bg-white border rounded shadow-sm p-4 mb-4">
+    <h4 class="fw-semibold text-center mb-3">Welcome</h4>
+    <p class="text-muted text-center">
+        Submit grievances, track status, and receive updates from departments.
+    </p>
+
+    <div class="d-flex justify-content-center gap-3 mt-3">
+        <a href="{{ url_for('auth.login') }}" class="btn btn-primary px-4 fw-semibold">Login</a>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary px-4 fw-semibold">
+            Student Registration
+        </a>
+    </div>
+</div>
+
+
+<div class="text-center mt-5 mb-4">
+    <h3 class="fw-bold">Choose Your Role to Login</h3>
+</div>
+
+<div class="row g-4">
+
+    <!-- Student -->
+    <div class="col-md-4">
+        <a href="{{ url_for('auth.login', type='student') }}" class="text-decoration-none">
+            <div class="bg-white border rounded shadow-sm p-4 text-center role-card">
+                <h5 class="fw-bold text-primary">Student</h5>
+                <p class="text-muted small mb-0">Login using pin</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- HOD -->
+    <div class="col-md-4">
+        <a href="{{ url_for('auth.login', type='hod') }}" class="text-decoration-none">
+            <div class="bg-white border rounded shadow-sm p-4 text-center role-card">
+                <h5 class="fw-bold text-primary">HOD</h5>
+                <p class="text-muted small mb-0">CSE / ECE HOD </p>
+            </div>
+        </a>
+    </div>
+
+    <!-- Warden -->
+    <div class="col-md-4">
+        <a href="{{ url_for('auth.login', type='warden') }}" class="text-decoration-none">
+            <div class="bg-white border rounded shadow-sm p-4 text-center role-card">
+                <h5 class="fw-bold text-primary">Warden</h5>
+                <p class="text-muted small mb-0">Hostel & Mess complaints</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- AO -->
+    <div class="col-md-4">
+        <a href="{{ url_for('auth.login', type='ao') }}" class="text-decoration-none">
+            <div class="bg-white border rounded shadow-sm p-4 text-center role-card">
+                <h5 class="fw-bold text-primary">Administrative Officer</h5>
+                <p class="text-muted small mb-0">Administrative Officer</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- Principal -->
+    <div class="col-md-4">
+        <a href="{{ url_for('auth.login', type='principal') }}" class="text-decoration-none">
+            <div class="bg-white border rounded shadow-sm p-4 text-center role-card">
+                <h5 class="fw-bold text-primary">Principal</h5>
+                <p class="text-muted small mb-0"> Overview all type of complaints</p>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+<style>
+.role-card {
+    transition: 0.3s;
+    border-radius: 12px;
+}
+.role-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 8px 22px rgba(0,0,0,0.08) !important;
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- ================= HEADER ================= -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <div>
+            <h3 class="fw-bold text-primary mb-0">Warden Dashboard — Hostel</h3>
+            <small class="text-muted">Hostel & Mess Complaints</small>
+        </div>
+
+        <!-- PROFILE BUTTON -->
+        <a href="{{ url_for('auth.profile_page') }}" 
+           class="btn btn-outline-primary fw-semibold">
+           Profile
+        </a>
+    </div>
+
+    <hr class="mb-4">
+
+    <!-- ========================= -->
+    <!-- COMPLAINT LIST -->
+    <!-- ========================= -->
+    <h5 class="fw-semibold mb-3">Assigned Complaints</h5>
+
+    {% for c in complaints %}
+    <div class="complaint-item p-3 mb-3 shadow-sm"
+         style="border-radius: 12px; border:1px solid #e3e7ef; background:white; transition:0.2s;">
+        
+        <!-- Title -->
+        <h5 class="fw-bold text-primary mb-1">{{ c.title }}</h5>
+
+        <!-- Status + Student -->
+        <p class="mb-2">
+            <b>Status:</b>
+            {% if c.status == "Pending" %}
+                <span class="badge bg-warning text-dark">Pending</span>
+            {% elif c.status == "In Progress" %}
+                <span class="badge bg-info text-dark">In Progress</span>
+            {% else %}
+                <span class="badge bg-success">Resolved</span>
+            {% endif %}
+            <br>
+            <small class="text-muted">
+                Filed by {{ c.student.name }} (PIN: {{ c.student.pin }})
+            </small>
+        </p>
+
+        <!-- Action Buttons -->
+        <div class="d-flex gap-2">
+
+            {% if c.status == "Pending" %}
+                <a class="btn btn-sm btn-primary fw-semibold"
+                   href="{{ url_for('warden.respond', complaint_id=c.id) }}">
+                    Respond
+                </a>
+
+            {% elif c.status == "In Progress" %}
+                <a class="btn btn-sm btn-primary fw-semibold"
+                   href="{{ url_for('warden.resolve_complaint', complaint_id=c.id) }}">
+                    Resolve
+                </a>
+            {% endif %}
+
+            {% if c.attachment %}
+            <a class="btn btn-sm btn-outline-primary fw-semibold"
+               href="{{ url_for('student.view_file', filename=c.attachment.split(',')[0].strip()) }}"
+               target="_blank">
+                View Proof
+            </a>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% else %}
+    <div class="alert alert-info text-center">
+        No complaints found.
+    </div>
+    {% endfor %}
+
+</div>
+
+
+<style>
+/* Smooth hover */
+.complaint-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 8px 22px rgba(0,0,0,0.08) !important;
+}
+</style>
+
+{% endblock %}

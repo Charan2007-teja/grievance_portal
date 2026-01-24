@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4" style="max-width: 620px;">
+
+    <!-- HEADER CARD -->
+    <div class="card shadow-sm p-4 mb-4" style="border-radius:14px;">
+        <div class="d-flex align-items-center gap-3">
+
+            <!-- Avatar -->
+            <div class="rounded-circle d-flex align-items-center justify-content-center"
+                 style="
+                    width:78px;
+                    height:78px;
+                    background:#0d6efd;
+                    color:white;
+                    font-size:30px;
+                    font-weight:700;
+                 ">
+                {{ current_user.name[0] }}
+            </div>
+
+            <!-- Student Info -->
+            <div>
+                <h4 class="fw-bold mb-1">{{ current_user.name }}</h4>
+                <p class="text-muted mb-1 small"><strong>Email:</strong> {{ current_user.email }}</p>
+                <p class="text-muted mb-1 small"><strong>PIN:</strong> {{ current_user.pin }}</p>
+                <p class="text-muted mb-0 small"><strong>Dept:</strong> {{ current_user.department }}</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- UPDATE PROFILE FORM -->
+    <div class="card shadow-sm p-4" style="border-radius:14px;">
+
+        <h4 class="fw-semibold mb-3">Update Profile</h4>
+
+        <form method="post" onsubmit="return validateUpdateForm();">
+
+            <!-- Name -->
+            <label class="fw-semibold">Full Name</label>
+            <input name="name" id="name" class="form-control mb-3"
+                   value="{{ current_user.name }}" required>
+            <small class="text-danger d-none" id="nameError">Name must contain only alphabets.</small>
+
+            <!-- Email -->
+            <label class="fw-semibold">Email</label>
+            <input name="email" id="email" class="form-control mb-3"
+                   value="{{ current_user.email }}" required>
+            <small class="text-danger d-none" id="emailError">Enter a valid email.</small>
+
+            <!-- Password -->
+            <label class="fw-semibold">New Password (optional)</label>
+            <div class="input-group mb-2">
+                <input type="password" name="password" id="password"
+                       class="form-control" placeholder="Leave empty to keep old password">
+
+                <button class="btn btn-outline-secondary" type="button"
+                        onclick="togglePassword()">Show</button>
+            </div>
+
+            <!-- Password strength -->
+            <div id="strengthContainer" class="mb-3 d-none">
+                <small id="strengthText" class="fw-semibold"></small>
+                <div class="progress mt-1" style="height:5px;">
+                    <div id="strengthBar" class="progress-bar"></div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary w-100 fw-semibold py-2">Save Changes</button>
+        </form>
+
+    </div>
+</div>
+
+<!-- ================= JS Enhancements ================= -->
+<script>
+/* ---------------- Toggle password ---------------- */
+function togglePassword() {
+    let p = document.getElementById("password");
+    p.type = p.type === "password" ? "text" : "password";
+}
+
+/* ---------------- Password Strength Meter ---------------- */
+document.getElementById("password").addEventListener("input", function() {
+    const pass = this.value;
+    const container = document.getElementById("strengthContainer");
+    const bar = document.getElementById("strengthBar");
+    const text = document.getElementById("strengthText");
+
+    if (pass.length === 0) {
+        container.classList.add("d-none");
+        return;
+    }
+
+    container.classList.remove("d-none");
+
+    let score = 0;
+    if (pass.length >= 6) score++;
+    if (/[A-Z]/.test(pass)) score++;
+    if (/[0-9]/.test(pass)) score++;
+    if (/[@$!%*?&]/.test(pass)) score++;
+
+    if (score === 1) {
+        bar.style.width = "25%";
+        bar.className = "progress-bar bg-danger";
+        text.innerText = "Weak Password";
+        text.style.color = "#dc2626";
+    }
+    else if (score === 2) {
+        bar.style.width = "50%";
+        bar.className = "progress-bar bg-warning";
+        text.innerText = "Moderate Password";
+        text.style.color = "#f59e0b";
+    }
+    else if (score === 3) {
+        bar.style.width = "75%";
+        bar.className = "progress-bar bg-info";
+        text.innerText = "Good Password";
+        text.style.color = "#0d6efd";
+    }
+    else {
+        bar.style.width = "100%";
+        bar.className = "progress-bar bg-success";
+        text.innerText = "Strong Password";
+        text.style.color = "#16a34a";
+    }
+});
+
+/* ---------------- Real-time validation ---------------- */
+function validateUpdateForm() {
+
+    let valid = true;
+
+    const name = document.getElementById("name");
+    const nameError = document.getElementById("nameError");
+
+    if (!/^[A-Za-z ]+$/.test(name.value)) {
+        nameError.classList.remove("d-none");
+        valid = false;
+    } else nameError.classList.add("d-none");
+
+    const email = document.getElementById("email");
+    const emailError = document.getElementById("emailError");
+
+    if (!email.value.includes("@") || !email.value.includes(".")) {
+        emailError.classList.remove("d-none");
+        valid = false;
+    } else emailError.classList.add("d-none");
+
+    return valid;
+}
+</script>
+
+{% endblock %}

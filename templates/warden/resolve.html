@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+  <div class="card shadow p-4" style="max-width:750px; margin:auto;">
+
+    <h3 class="text-danger fw-bold">Resolve Complaint #{{ complaint.id }}</h3>
+    <hr>
+
+    <h5 class="fw-semibold">Staff Previous Response</h5>
+    <div class="alert alert-info">
+      <b>{{ complaint.response_by }}:</b><br>
+      {{ complaint.response.replace("\n","<br>")|safe }}
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+
+      <label class="fw-semibold">Upload AFTER Images</label>
+      <input type="file" name="final_files" class="form-control mb-3" multiple>
+
+      <button class="btn btn-danger w-100">Mark as Resolved ✔</button>
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

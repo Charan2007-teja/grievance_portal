@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% set selected_type = request.args.get('type', '') %}
+
+<div class="d-flex justify-content-center mt-4">
+    <div class="card shadow-sm p-4 border-0"
+         style="max-width: 440px; width: 100%; border-radius: 12px;">
+
+        <!-- Logo -->
+        <div class="text-center mb-3">
+            <img src="{{ url_for('static', filename='images/sdptlogo.jpg') }}"
+                 alt="College Logo"
+                 style="width: 85px; height: auto;">
+        </div>
+
+        <h4 class="text-center mb-3 fw-semibold">Login</h4>
+
+        <form method="post">
+
+            <!-- HIDDEN USER TYPE -->
+            <input type="hidden" id="user_type_hidden" name="user_type" value="">
+
+            <!-- ROLE TITLE -->
+            <div id="roleTitle" class="text-center fw-bold text-primary mb-3"></div>
+
+            <!-- Login ID -->
+            <div class="mb-3">
+                <input name="loginid"
+                       id="loginid_input"
+                       class="form-control"
+                       placeholder=""
+                       required>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3 position-relative">
+                <input name="password"
+                       id="passwordInput"
+                       type="password"
+                       class="form-control"
+                       placeholder="Password"
+                       required>
+
+                <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                      onclick="togglePassword()"
+                      style="cursor:pointer; font-size:1rem; color:#6b7280;">
+                    
+                </span>
+            </div>
+
+            <!-- Security Note -->
+            <div class="alert alert-light border py-2 small mb-3" style="background:#fff;">
+                Never share your login details with anyone.
+            </div>
+
+            <!-- Login Button -->
+            <button class="btn btn-primary w-100 fw-semibold py-2">Login</button>
+
+            <!-- Register Link -->
+            <div class="text-center mt-3" id="registerBox">
+                <a href="{{ url_for('auth.register') }}" class="text-decoration-none">
+                    New Student? Register here
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+function togglePassword() {
+    let p = document.getElementById("passwordInput");
+    p.type = (p.type === "password") ? "text" : "password";
+}
+
+
+window.onload = function () {
+
+    let type = "{{ selected_type }}";
+    let roleText = document.getElementById("roleTitle");
+    let userTypeInput = document.getElementById("user_type_hidden");
+    let loginBox = document.getElementById("loginid_input");
+    let registerBox = document.getElementById("registerBox");
+
+    if (!type) type = "student";  // default
+
+    switch(type) {
+        case "student":
+            roleText.innerText = "Student Login";
+            userTypeInput.value = "student";
+            loginBox.placeholder = "Enter Student PIN";
+            registerBox.style.display = "block";
+            break;
+
+        case "hod":
+            roleText.innerText = "HOD Login";
+            userTypeInput.value = "hod";
+            loginBox.placeholder = "Enter HOD Email";
+            registerBox.style.display = "none";
+            break;
+
+        case "principal":
+            roleText.innerText = "Principal Login";
+            userTypeInput.value = "principal";
+            loginBox.placeholder = "Enter Principal Email";
+            registerBox.style.display = "none";
+            break;
+
+        case "warden":
+            roleText.innerText = "Warden Login";
+            userTypeInput.value = "warden";
+            loginBox.placeholder = "Enter Warden Email";
+            registerBox.style.display = "none";
+            break;
+
+        case "ao":
+            roleText.innerText = "Administrative Officer Login";
+            userTypeInput.value = "ao";
+            loginBox.placeholder = "Enter AO Email";
+            registerBox.style.display = "none";
+            break;
+
+        default:
+            roleText.innerText = "Staff Login";
+            userTypeInput.value = "staff";
+            loginBox.placeholder = "Enter Staff Email";
+            registerBox.style.display = "none";
+    }
+};
+</script>
+
+{% endblock %}

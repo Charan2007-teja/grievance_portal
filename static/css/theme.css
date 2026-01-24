@@ -1,0 +1,334 @@
+/* =========================================================
+   SDPT PORTAL — FULL UI THEME (2025 Stable Build)
+   Government Polytechnic Clean • Modern • Responsive UI
+========================================================= */
+
+/* ------------------------------
+   BASE + GLOBAL RESET
+------------------------------ */
+body {
+    background: #f4f6fa;
+    font-family: 'Inter', sans-serif;
+    color: #1e293b;
+    margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    color: #1e293b;
+}
+
+p {
+    color: #4b5563;
+}
+
+/* Remove link hover underline */
+a:hover { text-decoration: none; }
+
+/* Smooth animation */
+*, *::before, *::after {
+    transition: 0.25s ease;
+}
+
+/* ------------------------------
+   CONTAINERS & SPACING
+------------------------------ */
+.section {
+    padding: 50px 0;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #0d6efd;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.section-sub {
+    max-width: 720px;
+    text-align: center;
+    margin: 0 auto 20px auto;
+    font-size: 1rem;
+    color: #6b7280;
+}
+
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.navbar {
+    background: #0d6efd !important;
+    padding: 12px 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: white !important;
+}
+
+.nav-link {
+    color: #e6eaff !important;
+    font-weight: 500;
+    padding: 8px 16px !important;
+}
+
+.nav-link:hover {
+    color: #ffffff !important;
+    background: rgba(255,255,255,0.12);
+    border-radius: 6px;
+}
+
+/* Navbar button */
+.navbar .btn-light {
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+
+/* =========================================================
+   HERO SECTION
+========================================================= */
+
+.hero {
+    background: linear-gradient(135deg, #0d6efd 0%, #467cff 100%);
+    color: white;
+    padding: 60px 0;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+.hero h1 {
+    font-weight: 800;
+    font-size: 2.2rem;
+}
+
+.hero p {
+    color: #edf2ff;
+    font-size: 1rem;
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.card, .glass-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0px 2px 10px rgba(0,0,0,0.05);
+    padding: 18px;
+}
+
+.card:hover, .glass-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 6px 18px rgba(0,0,0,0.08);
+}
+
+/* Feature cards (Home Page) */
+.feature-box-home {
+    padding: 20px;
+    border-radius: 12px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    text-align: center;
+}
+
+.feature-box-home h5 {
+    font-weight: 600;
+}
+
+.feature-box-home:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+
+/* =========================================================
+   FORMS
+========================================================= */
+
+.form-control, .form-select {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 0.95rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13,110,253,0.15);
+}
+
+/* Label */
+.form-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+
+/* =========================================================
+   BUTTONS (Imported From Your Premium Button System)
+========================================================= */
+
+.btn {
+    --btn-radius: 8px;
+    --btn-padding-y: 8px;
+    --btn-padding-x: 20px;
+    --btn-font-weight: 600;
+    --btn-transition: 0.18s ease-in-out;
+
+    padding: var(--btn-padding-y) var(--btn-padding-x) !important;
+    border-radius: var(--btn-radius) !important;
+    font-weight: var(--btn-font-weight) !important;
+    font-size: 0.95rem !important;
+
+    border: none !important;
+    cursor: pointer;
+    transition: var(--btn-transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Solid */
+.btn-primary { background: #0d6efd !important; color: #fff !important; }
+.btn-success { background: #16a34a !important; color: #fff !important; }
+.btn-danger  { background: #dc2626 !important; color: #fff !important; }
+.btn-warning { background: #f59e0b !important; color: #1f2937 !important; }
+
+/* Outline */
+.btn-outline-primary {
+    border: 2px solid #0d6efd !important;
+    color: #0d6efd !important;
+    background: transparent !important;
+}
+
+.btn-outline-primary:hover {
+    background: #0d6efd !important;
+    color: #fff !important;
+}
+
+/* Hover animation */
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   TABLES
+========================================================= */
+
+.table {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table thead {
+    background: #f1f5f9;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.table th {
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.table td {
+    color: #4b5563;
+    font-size: 0.95rem;
+}
+
+.table tr:hover td {
+    background: #f9fafb;
+}
+
+
+/* =========================================================
+   BADGES (Used in Complaints Status)
+========================================================= */
+
+.badge {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+.badge-pending {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.badge-progress {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.badge-resolved {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer {
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+    padding: 25px 0;
+    margin-top: 50px;
+}
+
+.footer p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+
+/* =========================================================
+   ANIMATIONS (For Reveal Effects)
+========================================================= */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.reveal-left {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.reveal-left.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.reveal-right {
+    opacity: 0;
+    transform: translateX(20px);
+}
+
+.reveal-right.active {
+    opacity: 1;
+    transform: translateX(0);
+}

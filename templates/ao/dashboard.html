@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- ================= HEADER ================= -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h3 class="fw-bold text-primary mb-0">
+                AO Dashboard
+            </h3>
+            <small class="text-muted">Administrative Officer Panel</small>
+        </div>
+
+        <!-- Profile Button -->
+        <a href="{{ url_for('auth.profile_page') }}" 
+           class="btn btn-outline-primary fw-semibold">
+            Profile
+        </a>
+    </div>
+
+    <hr class="mb-4">
+
+    <!-- ================= COMPLAINT LIST ================= -->
+    <h5 class="fw-semibold mb-3">Assigned Complaints</h5>
+
+    {% for c in complaints %}
+    <div class="complaint-card p-3 mb-3 shadow-sm"
+         style="border-radius: 12px; border:1px solid #e3e7ef; background:white; transition:0.25s;">
+
+        <!-- Title -->
+        <h5 class="fw-bold text-primary mb-1">{{ c.title }}</h5>
+
+        <!-- STATUS + Student -->
+        <p class="mb-2">
+            <b>Status:</b>
+            {% if c.status == "Pending" %}
+                <span class="badge bg-warning text-dark">Pending</span>
+            {% elif c.status == "In Progress" %}
+                <span class="badge bg-info text-dark">In Progress</span>
+            {% else %}
+                <span class="badge bg-success">Resolved</span>
+            {% endif %}
+            <br>
+            <small class="text-muted">
+                Submitted by {{ c.student.name }} (PIN: {{ c.student.pin }})
+            </small>
+            <br>
+            <small class="text-muted">
+                {{ c.created_at.strftime('%d %b %Y %I:%M %p') }}
+            </small>
+        </p>
+
+        <!-- Buttons -->
+        <div class="d-flex flex-wrap gap-2">
+
+
+
+            <!-- Respond / Resolve / Completed -->
+            {% if c.status == "Pending" %}
+                <a class="btn btn-sm btn-primary fw-semibold"
+                   href="{{ url_for('ao.respond', complaint_id=c.id) }}">
+                    Respond
+                </a>
+
+            {% elif c.status == "In Progress" %}
+                <a class="btn btn-sm btn-warning fw-semibold text-dark"
+                   href="{{ url_for('ao.resolve_complaint', complaint_id=c.id) }}">
+                    Resolve
+                </a>
+
+            {% else %}
+                <button class="btn btn-sm btn-secondary fw-semibold" disabled>
+                    Completed
+                </button>
+            {% endif %}
+
+            <!-- View Proof -->
+            {% if c.attachment %}
+            <a class="btn btn-sm btn-outline-secondary"
+               href="{{ url_for('student.view_file', filename=c.attachment.split(',')[0]) }}"
+               target="_blank">
+                View Proof
+            </a>
+            {% endif %}
+        </div>
+
+    </div>
+
+    {% else %}
+    <div class="alert alert-info text-center">
+        No complaints assigned to AO.
+    </div>
+    {% endfor %}
+
+</div>
+
+<style>
+.complaint-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.09) !important;
+}
+</style>
+
+{% endblock %}

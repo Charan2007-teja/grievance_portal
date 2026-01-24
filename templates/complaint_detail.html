@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-center mt-4">
+    <div class="card shadow p-4" style="max-width: 850px; width:100%; border-radius: 14px;">
+
+        <h3 class="text-primary mb-2">
+            Complaint #{{ c.id }} — {{ c.title }}
+        </h3>
+
+        <div class="d-flex gap-3 flex-wrap mb-3">
+            <span class="badge bg-info text-dark px-3 py-2">
+                {{ c.category.replace("_"," ").title() }}
+            </span>
+
+            {% if c.status == "Pending" %}
+                <span class="badge bg-warning text-dark px-3 py-2">Pending</span>
+            {% elif c.status == "In Progress" %}
+                <span class="badge bg-primary px-3 py-2">In Progress</span>
+            {% elif c.status == "Resolved" %}
+                <span class="badge bg-success px-3 py-2">Resolved</span>
+            {% endif %}
+
+            <span class="badge bg-secondary px-3 py-2">
+                Assigned to: {{ c.assigned_to.upper() }}
+            </span>
+        </div>
+
+        <hr>
+
+        <h5 class="fw-bold">Description</h5>
+        <p class="text-muted" style="line-height:1.6;">
+            {{ c.description }}
+        </p>
+
+        <hr>
+
+        <h5 class="fw-bold mb-2">Attachments</h5>
+
+        {% if c.attachment %}
+            <div class="mb-3">
+                {% for f in c.attachment.split(',') %}
+                    <a class="btn btn-outline-secondary btn-sm mb-1"
+                    href="{{ url_for('student.view_proof', complaint_id=c.id) }}">
+                        📎 {{ f }}
+                    </a><br>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">No attachments uploaded.</p>
+        {% endif %}
+
+        <hr>
+
+        {% if c.response %}
+            <h5 class="text-success fw-bold">Response</h5>
+            <div class="alert alert-success">
+                <b>{{ c.response_by }}:</b><br>
+                {{ c.response.replace('\n', '<br>')|safe }}
+            </div>
+
+        {% else %}
+
+            <h5 class="fw-bold">Submit Response</h5>
+            <form method="post" action="{{ url_for(respond_url, complaint_id=c.id) }}">
+                <textarea name="response" rows="4"
+                        class="form-control mb-3"
+                        placeholder="Type your response…" required></textarea>
+
+                <button class="btn btn-primary w-100 fw-bold">
+                    Submit Response
+                </button>
+            </form>
+
+        {% endif %}
+
+        <hr>
+
+        {% if c.status != "Resolved" %}
+
+        <h5 class="fw-bold">Forward Complaint</h5>
+        <form method="post" action="{{ url_for(forward_url, complaint_id=c.id) }}" class="mb-3">
+            <select name="forward_to" class="form-select mb-2" required>
+                <option value="">Select Staff</option>
+                <option value="hod">HOD</option>
+                <option value="ao">AO</option>
+                <option value="warden">Warden</option>
+                <option value="principal">Principal</option>
+            </select>
+            <button class="btn btn-warning w-100 fw-bold">Forward</button>
+        </form>
+
+        <hr>
+
+        <h5 class="fw-bold">Close Complaint</h5>
+        <form method="post" action="{{ url_for(close_url, complaint_id=c.id) }}">
+            <textarea name="note" rows="2" class="form-control mb-2"
+                    placeholder="Closing note (optional)…"></textarea>
+            <button class="btn btn-danger w-100 fw-bold">Mark as Resolved</button>
+        </form>
+
+        {% endif %}
+
+        <hr>
+
+        <h5 class="fw-bold">Timeline</h5>
+        <a href="{{ url_for(timeline_url, complaint_id=c.id) }}"
+        class="btn btn-outline-primary w-100 fw-bold">
+            View Full Timeline
+        </a>
+
+    </div>
+</div>
+
+{% endblock %}

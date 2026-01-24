@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Timeline for Complaint #{{ complaint.id }}</h3>
+<ul class="list-group">
+{% for e in events %}
+  <li class="list-group-item"><strong>{{ e.action }}</strong> — {{ e.message }} <br><small>by {{ e.performed_by }} at {{ e.created_at }}</small></li>
+{% else %}<li class="list-group-item">No events</li>{% endfor %}
+</ul>
+{% endblock %}

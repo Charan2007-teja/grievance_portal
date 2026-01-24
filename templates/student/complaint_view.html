@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+  <div class="card shadow p-4" style="max-width:900px; margin:auto; border-radius:14px">
+
+    <!-- ========================= -->
+    <!-- HEADER -->
+    <!-- ========================= -->
+    <h3 class="text-primary fw-bold">
+        Complaint {{ complaint.id }} — {{ complaint.title }}
+    </h3>
+
+    <p class="mt-2">
+      <b>Status:</b>
+      {% if complaint.status == "Pending" %}
+          <span class="badge bg-warning text-dark">Pending</span>
+      {% elif complaint.status == "In Progress" %}
+          <span class="badge bg-info text-dark">In Progress</span>
+      {% else %}
+          <span class="badge bg-success">Resolved</span>
+      {% endif %}
+    </p>
+
+    <hr>
+
+    <!-- ========================= -->
+    <!-- DESCRIPTION -->
+    <!-- ========================= -->
+    <h5 class="fw-semibold">Description</h5>
+    <p class="alert alert-light border">{{ complaint.description }}</p>
+
+
+    <!-- ===================================================== -->
+    <!-- STUDENT ATTACHMENTS (Thumbnails) -->
+    <!-- ===================================================== -->
+    <div class="mt-4 p-3 border rounded" style="background:#f7faff;">
+      <h5 class="fw-bold text-dark">Student Attachments</h5>
+
+      {% if files %}
+      <div class="row mt-3">
+        {% for f in files %}
+        <div class="col-md-4 mb-3 text-center">
+            <a href="{{ url_for('student.view_file', filename=f) }}" target="_blank">
+                <img src="{{ url_for('student.view_file', filename=f) }}"
+                     class="img-thumbnail"
+                     style="height:150px; object-fit:cover;">
+            </a>
+            <div class="small mt-1 text-muted">{{ f }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+          <p class="text-muted">No attachments uploaded by student.</p>
+      {% endif %}
+    </div>
+
+
+
+    <!-- ===================================================== -->
+    <!-- STAFF BEFORE ATTACHMENTS (Thumbnails) -->
+    <!-- ===================================================== -->
+    <div class="mt-4 p-3 border rounded" style="background:#eef7ff;">
+      <h5 class="fw-bold text-secondary">Staff BEFORE Work Attachments</h5>
+
+      {% if complaint.before_files %}
+      <div class="row mt-3">
+        {% for bf in complaint.before_files.split(',') %}
+        <div class="col-md-4 mb-3 text-center">
+            <a href="{{ url_for('student.view_file', filename=bf) }}" target="_blank">
+                <img src="{{ url_for('student.view_file', filename=bf) }}"
+                     class="img-thumbnail"
+                     style="height:150px; object-fit:cover;">
+            </a>
+            <div class="small mt-1 text-muted">{{ bf }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+          <p class="text-muted">No BEFORE attachments uploaded.</p>
+      {% endif %}
+    </div>
+
+
+
+    <!-- ===================================================== -->
+    <!-- STAFF AFTER ATTACHMENTS (Thumbnails) -->
+    <!-- ===================================================== -->
+    <div class="mt-4 p-3 border rounded" style="background:#fff6e6;">
+      <h5 class="fw-bold text-secondary">Staff AFTER Work Attachments</h5>
+
+      {% if complaint.after_files %}
+      <div class="row mt-3">
+        {% for af in complaint.after_files.split(',') %}
+        <div class="col-md-4 mb-3 text-center">
+            <a href="{{ url_for('student.view_file', filename=af) }}" target="_blank">
+                <img src="{{ url_for('student.view_file', filename=af) }}"
+                     class="img-thumbnail"
+                     style="height:150px; object-fit:cover;">
+            </a>
+            <div class="small mt-1 text-muted">{{ af }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+          <p class="text-muted">No AFTER attachments uploaded.</p>
+      {% endif %}
+    </div>
+
+
+
+    <!-- ===================================================== -->
+    <!-- STAFF RESPONSE -->
+    <!-- ===================================================== -->
+
+    <hr>
+    <h4 class="fw-semibold text-success">Staff Response</h4>
+
+    {% if complaint.response %}
+        <div class="alert alert-info border">
+            <b>{{ complaint.response_by }}:</b><br>
+            {{ complaint.response.replace('\n','<br>')|safe }}
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            Staff has not responded yet.
+        </div>
+    {% endif %}
+
+
+    <!-- BACK BUTTON -->
+    <a href="{{ url_for('student.my_complaints') }}"
+       class="btn btn-secondary w-100 mt-3">
+       Back to My Complaints
+    </a>
+
+  </div>
+
+</div>
+
+{% endblock %}

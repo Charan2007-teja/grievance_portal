@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4" style="max-width: 780px;">
+
+    <h3 class="fw-bold mb-4">Staff Profile</h3>
+
+    <!-- ================= STAFF INFO CARD ================= -->
+    <div class="card shadow-sm p-4 mb-4" style="border-radius: 14px;">
+
+        <div class="row g-4 align-items-center">
+
+            <!-- Avatar -->
+            <div class="col-auto">
+                <div class="rounded-circle d-flex align-items-center justify-content-center shadow"
+                     style="
+                        width: 95px; height: 95px;
+                        background:#0d6efd;
+                        color:white;
+                        font-size: 34px;
+                        font-weight: 700;
+                     ">
+                    {{ current_user.name[0] }}
+                </div>
+            </div>
+
+            <!-- Staff Info -->
+            <div class="col">
+
+                <h4 class="fw-bold mb-1">{{ current_user.name }}</h4>
+
+                <p class="mb-1 text-muted small"><strong>Email:</strong> {{ current_user.email }}</p>
+
+                {% if current_user.department %}
+                <p class="mb-1 text-muted small"><strong>Department:</strong> {{ current_user.department }}</p>
+                {% endif %}
+
+                <p class="mb-1 text-muted small"><strong>Role:</strong> {{ current_user.role|upper }}</p>
+
+                <p class="mb-1 text-muted small"><strong>Device:</strong> <span id="deviceInfo"></span></p>
+                <p class="mb-0 text-muted small"><strong>Last Login:</strong> <span id="lastLogin"></span></p>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= SECURITY STATUS ================= -->
+    <div class="card shadow-sm p-4 mb-4" style="border-radius: 14px;">
+        <h5 class="fw-semibold mb-3">Security Status</h5>
+
+        <p class="small text-muted mb-1">Password Strength:</p>
+
+        <div class="progress mb-2" style="height: 6px;">
+            <div id="securityBar" class="progress-bar bg-success"></div>
+        </div>
+
+        <small id="securityText" class="fw-semibold"></small>
+    </div>
+
+
+    <!-- ================= QUICK TOOLS ================= -->
+    <div class="card shadow-sm p-4 mb-4" style="border-radius: 14px;">
+        <h5 class="fw-semibold mb-3">Quick Tools</h5>
+
+        <div class="d-grid gap-2">
+
+            <!-- Assigned complaints (works for all staff) -->
+            <a href="
+                {% if current_user.role == 'hod' %}
+                    {{ url_for('hod.hod_dashboard') }}#complaints_section
+                {% elif current_user.role == 'warden' %}
+                    {{ url_for('warden.warden_dashboard') }}#complaints_section
+                {% elif current_user.role == 'ao' %}
+                    {{ url_for('ao.ao_dashboard') }}#complaints_section
+                {% endif %}
+            " class="btn btn-outline-primary">
+                📂 View Assigned Complaints
+            </a>
+
+            <!-- Static, no backend -->
+            <a href="#rules_section" class="btn btn-outline-primary">
+                📘 College Rules & Guidelines
+            </a>
+
+        </div>
+    </div>
+
+
+    <!-- ================= EDIT PROFILE ================= -->
+    <div class="card shadow-sm p-4 mb-4" style="border-radius: 14px;">
+        <h5 class="fw-semibold mb-3">Edit Profile</h5>
+
+        <form method="post">
+
+            <label class="fw-semibold">Full Name</label>
+            <input name="name" class="form-control mb-3"
+                   value="{{ current_user.name }}" required>
+
+            <label class="fw-semibold">Email</label>
+            <input name="email" class="form-control mb-3"
+                   value="{{ current_user.email }}" required>
+
+            <label class="fw-semibold">Role</label>
+            <input class="form-control mb-3"
+                   value="{{ current_user.role|upper }}" disabled>
+
+            {% if current_user.department %}
+            <label class="fw-semibold">Department</label>
+            <input class="form-control mb-3"
+                   value="{{ current_user.department }}" disabled>
+            {% endif %}
+
+            <label class="fw-semibold">Change Password</label>
+            <input type="password" name="password"
+                   class="form-control mb-4"
+                   placeholder="Leave empty to keep same">
+
+            <button class="btn btn-primary w-100 fw-semibold">Save Changes</button>
+
+        </form>
+    </div>
+
+
+    <!-- ================= RULES & GUIDELINES ================= -->
+    <div id="rules_section" class="card shadow-sm p-4 mb-5" style="border-radius: 14px;">
+        <h5 class="fw-semibold mb-3">College Rules & Guidelines</h5>
+
+        <ul class="list-group">
+            <li class="list-group-item">✔ Students must carry ID cards at all times.</li>
+            <li class="list-group-item">✔ Strictly no ragging inside or outside the campus.</li>
+            <li class="list-group-item">✔ Hostel in–out timings must be followed strictly.</li>
+            <li class="list-group-item">✔ Mobile phones not allowed during class hours.</li>
+            <li class="list-group-item">✔ Cleanliness and discipline must be maintained everywhere.</li>
+        </ul>
+    </div>
+
+</div>
+
+<!-- ========================== JS ========================== -->
+<script>
+// Device info
+document.getElementById("deviceInfo").innerText =
+    navigator.userAgent.split("(")[1].split(")")[0];
+
+// Fake last login
+document.getElementById("lastLogin").innerText =
+    localStorage.getItem("lastLogin") || "First Login";
+localStorage.setItem("lastLogin", new Date().toLocaleString());
+
+// Security strength
+const bar = document.getElementById("securityBar");
+const text = document.getElementById("securityText");
+let score = {{ current_user.name|length }} * 10;
+score = Math.min(score, 100);
+bar.style.width = score + "%";
+
+if (score < 40) {
+    bar.className = "progress-bar bg-danger";
+    text.innerText = "Weak";
+} else if (score < 70) {
+    bar.className = "progress-bar bg-warning";
+    text.innerText = "Medium";
+} else {
+    bar.className = "progress-bar bg-success";
+    text.innerText = "Strong";
+}
+</script>
+
+{% endblock %}

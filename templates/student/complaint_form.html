@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card p-4 shadow-sm mx-auto w-100" style="max-width: 650px;">
+  <h3 class="mb-3 text-primary">File a New Complaint</h3>
+
+  <form method="post"
+        action="{{ url_for('student.new_complaint') }}"
+        enctype="multipart/form-data">
+
+    <!-- Title -->
+    <div class="mb-3">
+      <label class="form-label fw-bold">Complaint Title</label>
+      <input name="title" class="form-control" placeholder="Enter a short title" required>
+    </div>
+
+    <!-- Description -->
+    <div class="mb-3">
+      <label class="form-label fw-bold">Description</label>
+      <textarea name="description" rows="4" class="form-control"
+                placeholder="Explain your issue in detail" required></textarea>
+    </div>
+
+    <!-- Category -->
+    <div class="mb-3">
+      <label class="form-label fw-bold">Category</label>
+      <select name="category" class="form-select" required>
+        <option value="" disabled selected>Select a category</option>
+
+        {% for c in categories %}
+        <option value="{{ c }}">{{ c.replace('_', ' ') | title }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- NORMAL Attachments (Correct for Student) -->
+    <div class="mb-3">
+      <label class="form-label fw-bold">Upload Attachment (optional)</label>
+      <input type="file" name="attachments" class="form-control" multiple>
+    </div>
+
+    <button class="btn btn-primary w-100">Submit Complaint</button>
+
+  </form>
+</div>
+
+{% endblock %}

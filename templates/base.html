@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GPT SIDDIPET GRIEVANCE PORTAL</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Theme -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background:#f4f6fa; }
+
+        /* FLASH NOTIFICATIONS */
+        .flash-container {
+            position: fixed; top: 80px; right: 20px;
+            display: flex; flex-direction: column; gap: 12px;
+            z-index: 9999;
+        }
+        .flash-msg{
+            padding: 12px 18px;border-radius:10px;color:white;font-weight:600;
+            box-shadow:0 4px 14px rgba(0,0,0,0.15);
+            display:flex;gap:10px;animation:slideIn .5s ease;
+        }
+        .flash-success{background:#16a34a;}
+        .flash-danger{background:#dc2626;}
+        .flash-warning{background:#f59e0b; color:#1f2937;}
+        .flash-info{background:#0d6efd;}
+
+        @keyframes slideIn{
+            from{opacity:0; transform:translateX(50px);}
+            to{opacity:1; transform:translateX(0);}
+        }
+    </style>
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+
+<!-- ================= FLASH MESSAGES ================= -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flash-container">
+    {% for category, message in messages %}
+    <div class="flash-msg flash-{{ category }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background:#0d6efd;">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">GPT SIDDIPET Grievance Portal</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto">
+
+                {% if current_user.is_authenticated %}
+
+                    {% if current_user.role == "student" %}
+                      <li class="nav-item"><a class="nav-link" href="{{ url_for('student.my_complaints') }}">My Complaints</a></li>
+                      <li class="nav-item"><a class="nav-link" href="{{ url_for('student.profile') }}">Profile</a></li>
+
+                    {% elif current_user.role == "hod" %}
+                      <li class="nav-item"><a class="nav-link" href="{{ url_for('hod.hod_dashboard') }}">Dashboard</a></li>
+
+                    {% elif current_user.role == "principal" %}
+                      <li class="nav-item"><a class="nav-link" href="{{ url_for('principal.principal_dashboard') }}">Dashboard</a></li>
+
+                    {% elif current_user.role == "warden" %}
+                      <li class="nav-item"><a class="nav-link" href="{{ url_for('warden.warden_dashboard') }}">Dashboard</a></li>
+
+                    {% elif current_user.role == "ao" %}
+                      <li class="nav-item"><a class="nav-link" href="{{ url_for('ao.ao_dashboard') }}">Dashboard</a></li>
+                    {% endif %}
+
+                    <li class="nav-item ms-3">
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-light btn-sm fw-semibold px-3">Logout</a>
+                    </li>
+
+                {% else %}
+
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+
+                    <li class="nav-item ms-3">
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-light btn-sm fw-semibold px-3">Login</a>
+                    </li>
+
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+
+<!-- ============ HERO (Homepage Only) ============ -->
+{% if not current_user.is_authenticated and request.endpoint == 'index' %}
+<div class="container mt-4">
+    <div class="p-5 text-center text-white shadow" style="background:#0d6efd; border-radius:15px;">
+        <h1 class="fw-bold">GPT SIDDIPET Grievance Redressal Portal</h1>
+        <p class="lead">Fast, Transparent & Student-Friendly Complaint System</p>
+    </div>
+</div>
+{% endif %}
+
+
+
+<!-- ========= MAIN CONTENT ========= -->
+<div class="container py-4">
+    {% block content %}{% endblock %}
+</div>
+
+
+
+
+<!-- ========================== ABOUT SECTION ========================== -->
+{% if not current_user.is_authenticated and request.endpoint == 'index' %}
+<div id="about" class="container py-5">
+    <h3 class="fw-bold mb-3 text-primary">About This Portal</h3>
+
+    <p class="text-muted">
+        A Grievance Redressal Portal is an online system that allows students, staff, or citizens to submit complaints, track progress, and receive solutions from authorities in a transparent and structured way.
+
+It replaces traditional complaint boxes and manual processes with a digital, fast, and trackable system.<br>
+
+<h3> Why do colleges need a Grievance Redressal Portal?</h3><br>
+
+According to AICTE/UGC regulations, every institution must have a Grievance Redressal System to ensure:<br>
+
+✔ Transparency<br>
+✔ Student welfare<br>
+✔ Quick resolution of issues<br>
+✔ Accountability of staff/departments<br>
+✔ Proper documentation & tracking<br>
+
+A digital portal makes all of this much easier..
+    </p></div>
+
+
+<!-- ========================== FAQ SECTION ========================== -->
+<div id="faq" class="container py-5">
+    <h3 class="fw-bold mb-3 text-primary">Frequently Asked Questions</h3>
+
+    <div class="accordion" id="faqAcc">
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#f1">
+                    What types of complaints can I submit?
+                </button>
+            </h2>
+            <div id="f1" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    Academic, classroom, labs, admin issues, hostel issues, safety, harassment, etc.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item mt-2">
+            <h2 class="accordion-header">
+                <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#f2">
+                    Who reviews the complaints?
+                </button>
+            </h2>
+            <div id="f2" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    HOD, Warden, Administrative Officer, and Principal.
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ========================== CONTACT SECTION ========================== -->
+<div id="contact" class="container py-5">
+    <h3 class="fw-bold mb-3 text-primary">Contact Us</h3>
+
+    <div class="bg-white p-4 border rounded shadow-sm">
+        <p class="fw-semibold mb-1">Government Polytechnic SDPT</p>
+        <p class="text-muted mb-1">Email: gpt.sdpt189@gmail.com</p>
+        <p class="text-muted mb-1">Phone: +91 9912342189</p>
+        <p class="text-muted mb-1">Website: https://gptsdpt.dte.telangana.gov.in</p>
+        <p class="text-muted">Address:Government Polytechnic, Siddipet,Rajagopalpeta(V), Nanagnoor(M),Siddipet(D), Telangana,PIN - 502375</p>
+    </div>
+</div>
+{% endif %}
+
+
+
+
+<!-- ========================== FOOTER ========================== -->
+<footer class="bg-primary text-white text-center py-3">
+    <div class="small">&copy; 2025 GPT Siddipet College — Grievance Redressal Portal</div>
+</footer>
+
+
+
+
+<!-- BOOTSTRAP -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- AUTO REMOVE FLASH -->
+<script>
+setTimeout(()=>{
+    document.querySelectorAll(".flash-msg").forEach(msg=>{
+        msg.style.opacity="0";
+        msg.style.transform="translateX(40px)";
+        setTimeout(()=>msg.remove(),400);
+    });
+},3000);
+</script>
+
+<!-- AUTO LOGOUT -->
+<script>
+const AUTO_LOGOUT_TIME = 2 * 60 * 1000;
+let logoutTimer;
+
+function forceLogout(){
+    localStorage.setItem("logout_sync", Date.now());
+    fetch("/auth/logout").finally(()=>window.location="/auth/login");
+}
+function resetTimer(){
+    clearTimeout(logoutTimer);
+    logoutTimer=setTimeout(forceLogout, AUTO_LOGOUT_TIME);
+}
+["click","touchstart","mousemove","keydown","scroll"].forEach(ev=>{
+    document.addEventListener(ev, resetTimer);
+});
+window.addEventListener("storage", e=>{
+    if(e.key==="logout_sync") window.location="/auth/login";
+});
+resetTimer();
+</script>
+
+</body>
+</html>

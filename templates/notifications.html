@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Notifications</h3>
+<ul class="list-group">
+{% for n in notes %}
+  <li class="list-group-item {% if not n.is_read %}fw-bold{% endif %}">
+    {{ n.message }} <br><small>{{ n.created_at }}</small>
+    <form method="post" action="{{ url_for('staff.mark_read', nid=n.id) }}" style="display:inline">
+      <button class="btn btn-sm btn-outline-secondary">Mark read</button>
+    </form>
+  </li>
+{% else %}<li class="list-group-item">No notifications</li>{% endfor %}
+</ul>
+{% endblock %}

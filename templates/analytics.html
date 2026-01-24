@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+/* Professional Minimal Theme */
+.analytics-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 18px 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.analytics-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #0d6efd;
+}
+
+.analytics-label {
+    font-size: 0.95rem;
+    color: #6b7280;
+}
+
+.analytics-container {
+    max-width: 900px;
+    margin: auto;
+}
+</style>
+
+<div class="analytics-container mt-4">
+
+    <!-- Overview -->
+    <div class="analytics-card mb-4 text-center">
+        <h4 class="fw-semibold mb-3">Analytics Overview</h4>
+
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+
+            <!-- Total -->
+            <div class="analytics-card flex-fill text-center" style="min-width: 180px;">
+                <div class="analytics-value text-primary">{{ data.total }}</div>
+                <div class="analytics-label">Total</div>
+            </div>
+
+            <!-- Pending -->
+            <div class="analytics-card flex-fill text-center" style="min-width: 180px;">
+                <div class="analytics-value text-warning">{{ data.pending }}</div>
+                <div class="analytics-label">Pending</div>
+            </div>
+
+            <!-- Resolved -->
+            <div class="analytics-card flex-fill text-center" style="min-width: 180px;">
+                <div class="analytics-value text-success">{{ data.resolved }}</div>
+                <div class="analytics-label">Resolved</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="analytics-card">
+        <h5 class="fw-semibold mb-3">Complaints by Category</h5>
+
+        <ul class="list-group list-group-flush">
+            {% for k, v in data.by_category.items() %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold">{{ k }}</span>
+                    <span class="badge bg-primary rounded-pill">{{ v }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-bold text-primary">
+            Complaint Details
+        </h3>
+
+        <a href="{{ url_for('hod.hod_dashboard') }}"
+           class="btn btn-outline-secondary btn-sm">
+            Back
+        </a>
+    </div>
+
+    <hr>
+
+    <!-- COMPLAINT CARD -->
+    <div class="card shadow-sm p-4">
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <strong>Title:</strong>
+                <p>{{ complaint.title }}</p>
+            </div>
+
+            <div class="col-md-6">
+                <strong>Category:</strong>
+                <p>{{ complaint.category.replace('_',' ') | title }}</p>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <strong>Status:</strong>
+                <p>
+                    {% if complaint.status == "Pending" %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    {% elif complaint.status == "In Progress" %}
+                        <span class="badge bg-info text-dark">In Progress</span>
+                    {% elif complaint.status == "Resolved" %}
+                        <span class="badge bg-success">Resolved</span>
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="col-md-6">
+                <strong>Submitted On:</strong>
+                <p>{{ complaint.created_at.strftime('%d %b %Y %I:%M %p') }}</p>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- STUDENT DETAILS -->
+        <h5 class="fw-semibold text-secondary">Student Information</h5>
+
+        <p>
+            <strong>Name:</strong> {{ complaint.student.name }} <br>
+            <strong>PIN:</strong> {{ complaint.student.pin }} <br>
+            <strong>Email:</strong> {{ complaint.student.email }}
+        </p>
+
+        <hr>
+
+        <!-- DESCRIPTION -->
+        <h5 class="fw-semibold text-secondary">Complaint Description</h5>
+        <div class="border rounded p-3 bg-light mb-3">
+            {{ complaint.description }}
+        </div>
+
+        <!-- BEFORE FILES -->
+        {% if complaint.before_files %}
+        <hr>
+        <h5 class="fw-semibold text-secondary">Before Files</h5>
+        <ul>
+            {% for file in complaint.before_files.split(',') %}
+            <li>
+                <a href="{{ url_for('static', filename='uploads/' + file) }}"
+                   target="_blank">
+                    {{ file }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <!-- AFTER FILES -->
+        {% if complaint.after_files %}
+        <hr>
+        <h5 class="fw-semibold text-secondary">After Files</h5>
+        <ul>
+            {% for file in complaint.after_files.split(',') %}
+            <li>
+                <a href="{{ url_for('static', filename='uploads/' + file) }}"
+                   target="_blank">
+                    {{ file }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <!-- HOD RESPONSE -->
+        {% if complaint.response %}
+        <hr>
+        <h5 class="fw-semibold text-secondary">HOD Response</h5>
+        <div class="border rounded p-3 bg-success-subtle">
+            {{ complaint.response }}
+            <br>
+            <small class="text-muted">
+                Responded by {{ complaint.response_by }}
+            </small>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

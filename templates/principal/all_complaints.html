@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h3>All College Complaints</h3>
+  <table class="table table-bordered">
+    <thead><tr><th>ID</th><th>Student</th><th>Dept</th><th>Title</th><th>Status</th><th>Created</th></tr></thead>
+    <tbody>
+      {% for c in complaints %}
+      <tr>
+        <td>{{ c.id }}</td>
+        <td>{{ c.student.name if c.student else '—' }}</td>
+        <td>{{ c.department or '—' }}</td>
+        <td>{{ c.title }}</td>
+        <td>{{ c.status }}</td>
+        <td>{{ c.created_at }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">No complaints found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

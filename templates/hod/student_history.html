@@ -1,0 +1,43 @@
+<h4 class="mt-5">Declined Students</h4>
+<table class="table table-bordered">
+  <thead><tr><th>Name</th><th>PIN</th><th>Email</th><th>Dept</th><th>Registered</th></tr></thead>
+  <tbody>
+    {% for s in declined_students %}
+    <tr>
+      <td>{{ s.name }}</td><td>{{ s.pin }}</td><td>{{ s.email }}</td><td>{{ s.department }}</td>
+      <td>{{ s.created_at.strftime('%d %b %Y %I:%M %p') }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="text-center text-muted">No declined students.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% extends "base.html" %}
+{% block content %}
+<h3>Student Registration History</h3>
+<form method="get" class="row g-2 mb-3">
+  <div class="col-md-4"><input name="search" value="{{ search }}" class="form-control" placeholder="Search by name, pin, email"></div>
+  <div class="col-md-3">
+    <select name="status" class="form-select">
+      <option value="all" {% if status=='all' %}selected{% endif %}>All</option>
+      <option value="approved" {% if status=='approved' %}selected{% endif %}>Approved</option>
+      <option value="pending" {% if status=='pending' %}selected{% endif %}>Pending</option>
+    </select>
+  </div>
+  <div class="col-md-2"><button class="btn btn-primary">Filter</button></div>
+</form>
+
+<table class="table table-bordered">
+  <thead><tr><th>Name</th><th>PIN</th><th>Email</th><th>Dept</th><th>Approved</th><th>Registered</th><th>Action</th></tr></thead>
+  <tbody>
+    {% for s in students %}
+    <tr>
+      <td>{{ s.name }}</td><td>{{ s.pin }}</td><td>{{ s.email }}</td><td>{{ s.department }}</td>
+      <td>{% if s.approved %}Yes{% else %}No{% endif %}</td>
+      <td>{{ s.created_at.strftime('%d %b %Y %I:%M %p') }}</td>
+      <td>{% if not s.approved %}<a class="btn btn-sm btn-success" href="{{ url_for('hod.approve_student', student_id=s.id) }}">Approve</a>{% else %}—{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-center mt-4">
+  <div class="card shadow p-4 w-100" style="max-width:750px; border-radius:14px;">
+
+    <!-- Header -->
+    <h3 class="text-primary fw-bold mb-2">
+        AO — Respond to Complaint #{{ complaint.id }} — {{ complaint.title }}
+    </h3>
+
+    <p>
+      <b>Status:</b>
+      {% if complaint.status == "Pending" %}
+          <span class="badge bg-warning text-dark">Pending</span>
+      {% elif complaint.status == "In Progress" %}
+          <span class="badge bg-info text-dark">In Progress</span>
+      {% else %}
+          <span class="badge bg-success">Resolved</span>
+      {% endif %}
+    </p>
+
+    <hr>
+
+    <!-- Description -->
+    <h5 class="fw-semibold">Description</h5>
+    <p class="alert alert-light border">{{ complaint.description }}</p>
+
+    <!-- Student Attachments -->
+    <h5 class="fw-semibold mt-3">Student Attachments</h5>
+    {% if complaint.attachment %}
+      <ul class="list-group mb-3">
+        {% for f in complaint.attachment.split(',') %}
+        <li class="list-group-item d-flex justify-content-between">
+          {{ f }}
+          <a href="{{ url_for('student.view_file', filename=f) }}" target="_blank"
+             class="btn btn-sm btn-outline-primary">View</a>
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted">No attachments uploaded.</p>
+    {% endif %}
+
+    <hr>
+
+    <!-- If already responded (In Progress) -->
+    {% if complaint.status == "In Progress" %}
+      <h4 class="text-success fw-semibold">Already Responded</h4>
+
+      <div class="alert alert-info">
+        <b>{{ complaint.response_by }}:</b><br>
+        {{ complaint.response.replace('\n','<br>')|safe }}
+      </div>
+
+      <a href="{{ url_for('ao.resolve_complaint', complaint_id=complaint.id) }}"
+         class="btn btn-primary w-100 mt-3 fw-semibold">
+        Continue to Final Resolve
+      </a>
+
+    {% else %}
+
+      <!-- Response Form -->
+      <h4 class="text-success fw-semibold">Submit Your Response</h4>
+
+      <form method="POST" enctype="multipart/form-data" class="mt-3">
+
+          <!-- Text Response -->
+          <textarea name="response" rows="4"
+                    class="form-control mb-3"
+                    placeholder="Write your response here..." required></textarea>
+
+          <!-- BEFORE Upload -->
+          <label class="fw-semibold">Upload BEFORE Images</label>
+          <input type="file"
+                 name="before_attachments"
+                 class="form-control mb-3"
+                 multiple
+                 onchange="prefixFiles(event,'BEFORE_')">
+
+          <!-- AFTER Upload -->
+          <label class="fw-semibold">Upload AFTER Images</label>
+          <input type="file"
+                 name="after_attachments"
+                 class="form-control mb-4"
+                 multiple
+                 onchange="prefixFiles(event,'AFTER_')">
+
+          <button class="btn btn-success w-100 fw-semibold">
+              Submit Response
+          </button>
+
+      </form>
+
+    {% endif %}
+
+  </div>
+</div>
+
+<script>
+function prefixFiles(e, prefix) {
+    const dt = new DataTransfer();
+    for (let f of e.target.files) {
+        dt.items.add(new File([f], prefix + f.name, { type: f.type }));
+    }
+    e.target.files = dt.files;
+}
+</script>
+
+{% endblock %}
